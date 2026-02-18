@@ -9,11 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chatbot.travel.model.Place;
 import com.chatbot.travel.service.PlaceService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/places")
@@ -26,7 +27,7 @@ public class PlaceController {
 
     // Add Place (Admin)
     @PostMapping
-    public Place addPlace(@RequestBody Place place) {
+    public Place addPlace(@Valid @RequestBody Place place) {
         return placeService.addPlace(place);
     }
 
@@ -45,7 +46,7 @@ public class PlaceController {
     // Update Place
     @PutMapping("/{id}")
     public Place updatePlace(@PathVariable Long id,
-                             @RequestBody Place place) {
+                             @Valid @RequestBody Place place) {
         return placeService.updatePlace(id, place);
     }
 

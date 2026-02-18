@@ -1,21 +1,19 @@
 package com.chatbot.travel.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "places")
-
 public class Place {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long placeId;
@@ -58,14 +56,20 @@ public class Place {
     @Column(nullable = false)
     private LocalTime closingTime;
 
-    //Default Constructor
-    public Place() {
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_id")
+    @JsonIgnore
+    private User admin;
 
-    //Parameterized Constructor
+    // Optional (nice to have): one place can have many bookings
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Booking> bookings = new ArrayList<>();
+
+    public Place() {}
+
     public Place(String name, String state, String city, String description,
-                 Double adultPrice, Double childPrice,
-                 Integer availableSlots,
+                 Double adultPrice, Double childPrice, Integer availableSlots,
                  LocalTime openingTime, LocalTime closingTime) {
         this.name = name;
         this.state = state;
@@ -78,88 +82,41 @@ public class Place {
         this.closingTime = closingTime;
     }
 
+    public Long getPlaceId() { return placeId; }
+    public void setPlaceId(Long placeId) { this.placeId = placeId; }
 
-    public Long getPlaceId() {
-        return placeId;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setPlaceId(Long placeId) {
-        this.placeId = placeId;
-    }
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
 
-    public String getName() {
-        return name;
-    }
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getState() {
-        return state;
-    }
+    public Double getAdultPrice() { return adultPrice; }
+    public void setAdultPrice(Double adultPrice) { this.adultPrice = adultPrice; }
 
-    public void setState(String state) {
-        this.state = state;
-    }
+    public Double getChildPrice() { return childPrice; }
+    public void setChildPrice(Double childPrice) { this.childPrice = childPrice; }
 
-    public String getCity() {
-        return city;
-    }
+    public Integer getAvailableSlots() { return availableSlots; }
+    public void setAvailableSlots(Integer availableSlots) { this.availableSlots = availableSlots; }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+    public LocalTime getOpeningTime() { return openingTime; }
+    public void setOpeningTime(LocalTime openingTime) { this.openingTime = openingTime; }
 
-    public String getDescription() {
-        return description;
-    }
+    public LocalTime getClosingTime() { return closingTime; }
+    public void setClosingTime(LocalTime closingTime) { this.closingTime = closingTime; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public User getAdmin() { return admin; }
+    public void setAdmin(User admin) { this.admin = admin; }
 
-    public Double getAdultPrice() {
-        return adultPrice;
-    }
-
-    public void setAdultPrice(Double adultPrice) {
-        this.adultPrice = adultPrice;
-    }
-
-    public Double getChildPrice() {
-        return childPrice;
-    }
-
-    public void setChildPrice(Double childPrice) {
-        this.childPrice = childPrice;
-    }
-
-    public Integer getAvailableSlots() {
-        return availableSlots;
-    }
-
-    public void setAvailableSlots(Integer availableSlots) {
-        this.availableSlots = availableSlots;
-    }
-
-    public LocalTime getOpeningTime() {
-        return openingTime;
-    }
-
-    public void setOpeningTime(LocalTime openingTime) {
-        this.openingTime = openingTime;
-    }
-
-    public LocalTime getClosingTime() {
-        return closingTime;
-    }
-
-    public void setClosingTime(LocalTime closingTime) {
-        this.closingTime = closingTime;
-    }
-
-    //toString()
+    public List<Booking> getBookings() { return bookings; }
+    public void setBookings(List<Booking> bookings) { this.bookings = bookings; }
 
     @Override
     public String toString() {
