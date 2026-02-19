@@ -2,6 +2,7 @@ package com.chatbot.travel.model;
 
 import com.chatbot.travel.model.enums.BookingStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bookings")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Booking {
 
     @Id
@@ -54,7 +56,10 @@ public class Booking {
     @Column(nullable = false)
     private BookingStatus bookingStatus = BookingStatus.PENDING;
 
-    private Long paymentId;
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Payment payment;
+
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -119,9 +124,6 @@ public class Booking {
 
     public BookingStatus getBookingStatus() { return bookingStatus; }
     public void setBookingStatus(BookingStatus bookingStatus) { this.bookingStatus = bookingStatus; }
-
-    public Long getPaymentId() { return paymentId; }
-    public void setPaymentId(Long paymentId) { this.paymentId = paymentId; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 }
