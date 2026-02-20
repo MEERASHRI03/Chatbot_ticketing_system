@@ -1,7 +1,9 @@
 package com.chatbot.travel.service;
 
+import com.chatbot.travel.model.Booking;
 import com.chatbot.travel.model.Ticket;
 import com.chatbot.travel.model.enums.TicketStatus;
+import com.chatbot.travel.repository.BookingRepository;
 import com.chatbot.travel.repository.TicketRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +13,24 @@ import java.util.List;
 @Service
 public class TicketService {
 
-   private final TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
+    private final BookingRepository bookingRepository;
 
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository,
+                         BookingRepository bookingRepository) {
         this.ticketRepository = ticketRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     public Ticket createTicket(Ticket ticket) {
+
+        Long bookingId = ticket.getBooking().getBookingId();
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        ticket.setBooking(booking);
+
         return ticketRepository.save(ticket);
     }
 
