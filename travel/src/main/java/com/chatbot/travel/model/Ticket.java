@@ -30,8 +30,8 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ticketId;
 
-    // ✅ OneToOne mapping with Booking
-    @OneToOne(fetch = FetchType.LAZY)
+    //  OneToOne mapping with Booking
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "booking_id", nullable = false, unique = true)
     private Booking booking;
 
@@ -147,5 +147,5 @@ public class Ticket {
 
     public LocalDateTime getIssuedAt() {
         return issuedAt;
-    }
+    }  
 }
