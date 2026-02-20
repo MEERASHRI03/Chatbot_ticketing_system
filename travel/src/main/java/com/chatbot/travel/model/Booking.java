@@ -31,7 +31,6 @@ public class Booking {
     @JsonIgnore
     private Place place;
 
-    // Postman-friendly fields (not stored as columns)
     @Transient
     private Long userId;
 
@@ -60,6 +59,9 @@ public class Booking {
     @JsonIgnore
     private Payment payment;
 
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIgnore
+    private Ticket ticket;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -67,63 +69,129 @@ public class Booking {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-        if (this.bookingStatus == null) this.bookingStatus = BookingStatus.PENDING;
+        if (this.bookingStatus == null) {
+            this.bookingStatus = BookingStatus.PENDING;
+        }
     }
 
     public Booking() {}
 
-    public Long getBookingId() { return bookingId; }
-    public void setBookingId(Long bookingId) { this.bookingId = bookingId; }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public Long getBookingId() {
+        return bookingId;
+    }
 
-    public Place getPlace() { return place; }
-    public void setPlace(Place place) { this.place = place; }
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
+    }
 
-    // ✅ Show userId in API response
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
+    // Show userId in API response
     @JsonProperty("userId")
     public Long getUserId() {
         if (user != null) return user.getUserId();
         return userId;
     }
 
-    // ✅ Accept userId in request body
+    // Accept userId in request
     @JsonProperty("userId")
     public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    // ✅ Show placeId in API response
+    // Show placeId in API response
     @JsonProperty("placeId")
     public Long getPlaceId() {
         if (place != null) return place.getPlaceId();
         return placeId;
     }
 
-    // ✅ Accept placeId in request body
+    // Accept placeId in request
     @JsonProperty("placeId")
     public void setPlaceId(Long placeId) {
         this.placeId = placeId;
     }
 
-    public LocalDate getVisitDate() { return visitDate; }
-    public void setVisitDate(LocalDate visitDate) { this.visitDate = visitDate; }
+    public LocalDate getVisitDate() {
+        return visitDate;
+    }
 
-    public String getTimeSlot() { return timeSlot; }
-    public void setTimeSlot(String timeSlot) { this.timeSlot = timeSlot; }
+    public void setVisitDate(LocalDate visitDate) {
+        this.visitDate = visitDate;
+    }
 
-    public int getAdultCount() { return adultCount; }
-    public void setAdultCount(int adultCount) { this.adultCount = adultCount; }
+    public String getTimeSlot() {
+        return timeSlot;
+    }
 
-    public int getChildCount() { return childCount; }
-    public void setChildCount(int childCount) { this.childCount = childCount; }
+    public void setTimeSlot(String timeSlot) {
+        this.timeSlot = timeSlot;
+    }
 
-    public BigDecimal getTotalAmount() { return totalAmount; }
-    public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
+    public int getAdultCount() {
+        return adultCount;
+    }
 
-    public BookingStatus getBookingStatus() { return bookingStatus; }
-    public void setBookingStatus(BookingStatus bookingStatus) { this.bookingStatus = bookingStatus; }
+    public void setAdultCount(int adultCount) {
+        this.adultCount = adultCount;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public int getChildCount() {
+        return childCount;
+    }
+
+    public void setChildCount(int childCount) {
+        this.childCount = childCount;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public BookingStatus getBookingStatus() {
+        return bookingStatus;
+    }
+
+    public void setBookingStatus(BookingStatus bookingStatus) {
+        this.bookingStatus = bookingStatus;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }
