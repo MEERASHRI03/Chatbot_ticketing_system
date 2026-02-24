@@ -1,5 +1,6 @@
 package com.chatbot.travel.repository;
 
+import com.chatbot.travel.model.Booking;
 import com.chatbot.travel.model.Ticket;
 import com.chatbot.travel.model.enums.TicketStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByTicketStatus(TicketStatus status);
 
     List<Ticket> findByVisitDate(LocalDate visitDate);
+
+    boolean existsByBooking(Booking booking);
+
+    Ticket findByBooking(Booking booking);
 }

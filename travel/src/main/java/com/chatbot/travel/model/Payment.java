@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.chatbot.travel.model.enums.PaymentStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -25,19 +24,19 @@ import jakarta.persistence.Table;
 @Table(name = "payments")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Payment {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
     // 🔹 Booking Mapping
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_id", nullable = false, unique = true)  
+    @JoinColumn(name = "booking_id", nullable = false, unique = true)
     private Booking booking;
 
     // 🔹 User Mapping
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)  
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(nullable = false)
@@ -52,38 +51,84 @@ public class Payment {
 
     private String paymentMethod;
 
+    // 🔹 Created Time
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    // 🔹 Actual Payment Time
+    private LocalDateTime paymentDate;
 
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-        if (this.paymentStatus == null)
+        if (this.paymentStatus == null) {
             this.paymentStatus = PaymentStatus.PENDING;
+        }
     }
 
     public Payment() {}
 
-    public Long getPaymentId() { return paymentId; }
+    public Long getPaymentId() {
+        return paymentId;
+    }
 
-    public Booking getBooking() { return booking; }
-    public void setBooking(Booking booking) { this.booking = booking; }
+    public Booking getBooking() {
+        return booking;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
 
-    public BigDecimal getAmount() { return amount; }
-    public void setAmount(BigDecimal amount) { this.amount = amount; }
+    public User getUser() {
+        return user;
+    }
 
-    public String getTransactionId() { return transactionId; }
-    public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public PaymentStatus getPaymentStatus() { return paymentStatus; }
-    public void setPaymentStatus(PaymentStatus paymentStatus) { this.paymentStatus = paymentStatus; }
+    public BigDecimal getAmount() {
+        return amount;
+    }
 
-    public String getPaymentMethod() { return paymentMethod; }
-    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public String getTransactionId() {
+        return transactionId;
+    }
 
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDateTime paymentDate) {
+        this.paymentDate = paymentDate;
+    }
 }

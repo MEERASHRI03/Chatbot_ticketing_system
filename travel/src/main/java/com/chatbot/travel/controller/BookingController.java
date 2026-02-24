@@ -61,4 +61,9 @@ public class BookingController {
     public List<Booking> allBookingsForAdmin() {
         return bookingService.getAllBookingsForAdmin();
     }
+
+    @PutMapping("/cancel/{id}")
+    public Booking cancelBooking(@PathVariable Long id) {
+        return bookingService.cancelBooking(id);
+    }
 }

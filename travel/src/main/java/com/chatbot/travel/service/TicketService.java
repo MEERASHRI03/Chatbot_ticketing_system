@@ -2,12 +2,12 @@ package com.chatbot.travel.service;
 
 import com.chatbot.travel.model.Booking;
 import com.chatbot.travel.model.Ticket;
+import com.chatbot.travel.model.enums.BookingStatus;
 import com.chatbot.travel.model.enums.TicketStatus;
 import com.chatbot.travel.repository.BookingRepository;
 import com.chatbot.travel.repository.TicketRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -22,14 +22,37 @@ public class TicketService {
         this.bookingRepository = bookingRepository;
     }
 
+    // SAFE MANUAL TICKET CREATION
     public Ticket createTicket(Ticket ticket) {
 
-        Long bookingId = ticket.getBooking().getBookingId();
+        // 1️⃣ Fetch booking
+        Booking booking = bookingRepository.findById(
+                ticket.getBooking().getBookingId()
+        ).orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        // 2️⃣ Allow only CONFIRMED booking
+        if (booking.getBookingStatus() != BookingStatus.CONFIRMED) {
+            throw new RuntimeException(
+                    "Ticket cannot be generated. Booking not confirmed."
+            );
+        }
 
+        // 3️⃣ Prevent duplicate ticket
+        if (ticketRepository.existsByBooking(booking)) {
+            throw new RuntimeException(
+                    "Ticket already generated for this booking."
+            );
+        }
+
+        // Auto-fill business fields
         ticket.setBooking(booking);
+        ticket.setPlaceName(booking.getPlace().getName());
+        ticket.setVisitDate(booking.getVisitDate());
+        ticket.setNumberOfVisitors(
+                booking.getAdultCount() + booking.getChildCount()
+        );
+        ticket.setAmount(booking.getTotalAmount());
+        ticket.setTicketStatus(TicketStatus.ACTIVE);
 
         return ticketRepository.save(ticket);
     }
@@ -43,38 +66,56 @@ public class TicketService {
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
     }
 
-    public Ticket updateTicket(Long id, Ticket updatedTicket) {
+    public Ticket updateTicket(Long id, Ticket ticket) {
         Ticket existing = getTicketById(id);
 
-        if (existing.getTicketStatus() == TicketStatus.CANCELLED) {
-            throw new RuntimeException("Cancelled ticket cannot be updated");
-        }
-
-        existing.setPlaceName(updatedTicket.getPlaceName());
-        existing.setVisitDate(updatedTicket.getVisitDate());
-        existing.setNumberOfVisitors(updatedTicket.getNumberOfVisitors());
-        existing.setAmount(updatedTicket.getAmount());
+        existing.setVisitDate(ticket.getVisitDate());
+        existing.setNumberOfVisitors(ticket.getNumberOfVisitors());
+        existing.setAmount(ticket.getAmount());
 
         return ticketRepository.save(existing);
     }
 
-    public void deleteTicket(Long id) {
-        ticketRepository.deleteById(id);
-    }
-
     public Ticket cancelTicket(Long id) {
         Ticket ticket = getTicketById(id);
+
+        // Only ACTIVE tickets can be cancelled
+        if (ticket.getTicketStatus() != TicketStatus.ACTIVE) {
+            throw new RuntimeException(
+                "Only ACTIVE tickets can be cancelled. Current status: " + ticket.getTicketStatus()
+            );
+        }
+
         ticket.setTicketStatus(TicketStatus.CANCELLED);
         return ticketRepository.save(ticket);
     }
 
     public Ticket markAsUsed(Long id) {
         Ticket ticket = getTicketById(id);
+
+        // Only ACTIVE tickets can be marked as USED
+        if (ticket.getTicketStatus() != TicketStatus.ACTIVE) {
+            throw new RuntimeException(
+                "Only ACTIVE tickets can be marked as USED. Current status: " + ticket.getTicketStatus()
+            );
+        }
+
+        // Check if the visit date has arrived
+        if (ticket.getVisitDate() == null || ticket.getVisitDate().isAfter(java.time.LocalDate.now())) {
+            throw new RuntimeException(
+                "Ticket cannot be used before the visit date: " + ticket.getVisitDate()
+            );
+        }
+
         ticket.setTicketStatus(TicketStatus.USED);
         return ticketRepository.save(ticket);
     }
 
-    public List<Ticket> getByVisitDate(LocalDate date) {
+    public void deleteTicket(Long id) {
+        ticketRepository.deleteById(id);
+    }
+
+    public List<Ticket> getByVisitDate(java.time.LocalDate date) {
         return ticketRepository.findByVisitDate(date);
     }
 }
