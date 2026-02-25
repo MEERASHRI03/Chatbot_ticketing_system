@@ -51,11 +51,11 @@ public class Payment {
 
     private String paymentMethod;
 
-    // 🔹 Created Time
+    // Created Time
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // 🔹 Actual Payment Time
+    // Actual Payment Time
     private LocalDateTime paymentDate;
 
     @PrePersist

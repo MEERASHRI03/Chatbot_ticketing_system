@@ -48,7 +48,7 @@ public class PaymentService {
         Booking booking = bookingRepository.findById(payment.getBooking().getBookingId())
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        // 🚫 Prevent double payment
+        // Prevent double payment
         if (booking.getBookingStatus() == BookingStatus.CONFIRMED) {
             throw new RuntimeException("Booking already paid");
         }
@@ -59,7 +59,7 @@ public class PaymentService {
 
         Payment savedPayment = paymentRepository.save(payment);
 
-        // 🔥 AUTOMATED WORKFLOW
+        // AUTOMATED WORKFLOW
         if (savedPayment.getPaymentStatus() == PaymentStatus.SUCCESS) {
 
             // 1️⃣ Confirm Booking

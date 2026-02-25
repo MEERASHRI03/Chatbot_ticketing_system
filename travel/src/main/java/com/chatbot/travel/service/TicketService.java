@@ -25,19 +25,19 @@ public class TicketService {
     // SAFE MANUAL TICKET CREATION
     public Ticket createTicket(Ticket ticket) {
 
-        // 1️⃣ Fetch booking
+        // Fetch booking
         Booking booking = bookingRepository.findById(
                 ticket.getBooking().getBookingId()
         ).orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        // 2️⃣ Allow only CONFIRMED booking
+        // Allow only CONFIRMED booking
         if (booking.getBookingStatus() != BookingStatus.CONFIRMED) {
             throw new RuntimeException(
                     "Ticket cannot be generated. Booking not confirmed."
             );
         }
 
-        // 3️⃣ Prevent duplicate ticket
+        // Prevent duplicate ticket
         if (ticketRepository.existsByBooking(booking)) {
             throw new RuntimeException(
                     "Ticket already generated for this booking."

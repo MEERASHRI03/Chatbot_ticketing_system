@@ -61,7 +61,6 @@ public class Place {
     @JsonIgnore
     private User admin;
 
-    // Optional (nice to have): one place can have many bookings
     @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Booking> bookings = new ArrayList<>();

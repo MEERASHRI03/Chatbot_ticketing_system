@@ -52,7 +52,7 @@ public class User {
     @JsonIgnore
     private List<Booking> bookings = new ArrayList<>();
 
-    // One admin can create many places (optional)
+    // One admin can create many places 
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Place> createdPlaces = new ArrayList<>();

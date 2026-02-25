@@ -11,6 +11,4 @@ public interface RefundRepository extends JpaRepository<Refund, Long> {
     //  Check if refund already exists for a ticket
     Optional<Refund> findByTicket(Ticket ticket);
 
-    // Optional helper if needed
-    // Optional<Refund> findByTicket_TicketId(Long ticketId);
 }

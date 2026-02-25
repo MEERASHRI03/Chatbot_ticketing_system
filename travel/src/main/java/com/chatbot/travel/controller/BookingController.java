@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -21,9 +22,15 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@Valid @RequestBody Booking booking) {
-        Booking saved = bookingService.createBooking(booking);
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+    public ResponseEntity<?> createBooking(@Valid @RequestBody Booking booking) {
+        try {
+            Booking saved = bookingService.createBooking(booking);
+            return new ResponseEntity<>(saved, HttpStatus.CREATED);
+        } catch (RuntimeException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", ex.getMessage()));
+        }
     }
 
     @GetMapping
@@ -42,7 +49,8 @@ public class BookingController {
     }
 
     @PutMapping("/{bookingId}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable Long bookingId, @Valid @RequestBody Booking booking) {
+    public ResponseEntity<Booking> updateBooking(@PathVariable Long bookingId,
+                                                 @Valid @RequestBody Booking booking) {
         return ResponseEntity.ok(bookingService.updateBooking(bookingId, booking));
     }
 
