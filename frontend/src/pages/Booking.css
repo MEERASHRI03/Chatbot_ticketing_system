@@ -1,0 +1,147 @@
+.booking-container {
+  background: #f5f7fa;
+  min-height: 100vh;
+  padding: 30px 0;
+}
+
+.booking-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+}
+
+@media (max-width: 768px) {
+  .booking-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.booking-details h1 {
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.detail-card,
+.visitor-card,
+.pricing-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.detail-card h3,
+.visitor-card h3,
+.pricing-card h3 {
+  color: #333;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 10px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row.total {
+  font-size: 18px;
+  font-weight: bold;
+  color: #667eea;
+  padding-top: 15px;
+  border-top: 2px solid #667eea;
+}
+
+.label {
+  color: #666;
+  font-weight: 500;
+}
+
+.value {
+  color: #333;
+  font-weight: 500;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status-pending {
+  background: #ffc107;
+  color: #333;
+}
+
+.status-confirmed {
+  background: #28a745;
+  color: white;
+}
+
+.status-cancelled {
+  background: #dc3545;
+  color: white;
+}
+
+.status-success {
+  background: #28a745;
+  color: white;
+}
+
+.status-failed {
+  background: #dc3545;
+  color: white;
+}
+
+.payment-card {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 20px;
+}
+
+.payment-card h2 {
+  color: #333;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 10px;
+}
+
+.payment-amount {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.payment-amount p {
+  margin: 0;
+  color: #666;
+}
+
+.amount {
+  font-size: 32px !important;
+  color: #667eea !important;
+  font-weight: bold !important;
+}
+
+.btn-lg {
+  font-size: 16px;
+  padding: 12px 20px;
+}
+
+.mt-2 {
+  margin-top: 10px;
+}
