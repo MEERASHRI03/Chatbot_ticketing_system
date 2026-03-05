@@ -1,6 +1,8 @@
 package com.chatbot.travel.model.enums;
 
 public enum Role {
-    USER, 
-    ADMIN
+    USER,
+    REGIONAL_ADMIN,
+    SUPER_ADMIN
+
 }

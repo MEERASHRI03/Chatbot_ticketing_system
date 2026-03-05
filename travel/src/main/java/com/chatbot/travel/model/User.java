@@ -1,5 +1,6 @@
 package com.chatbot.travel.model;
 
+import com.chatbot.travel.model.enums.Region;
 import com.chatbot.travel.model.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -39,10 +40,17 @@ public class User {
     @Column(nullable = false)
     private String phone;
 
+    // ================= ROLE =================
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Role is required")
     @Column(nullable = false)
     private Role role;
+
+    // ================= REGION =================
+    // Only applicable for REGIONAL_ADMIN
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private Region region;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -64,6 +72,8 @@ public class User {
 
     public User() {}
 
+    // ================= GETTERS & SETTERS =================
+
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
 
@@ -81,6 +91,9 @@ public class User {
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
+
+    public Region getRegion() { return region; }
+    public void setRegion(Region region) { this.region = region; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 

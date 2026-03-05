@@ -1,5 +1,6 @@
 package com.chatbot.travel.model;
 
+import com.chatbot.travel.model.enums.Region;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -65,11 +66,15 @@ public class Place {
     @JsonIgnore
     private List<Booking> bookings = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Region region;
+
     public Place() {}
 
     public Place(String name, String state, String city, String description,
                  Double adultPrice, Double childPrice, Integer availableSlots,
-                 LocalTime openingTime, LocalTime closingTime) {
+                 LocalTime openingTime, LocalTime closingTime, Region region) {
         this.name = name;
         this.state = state;
         this.city = city;
@@ -79,6 +84,7 @@ public class Place {
         this.availableSlots = availableSlots;
         this.openingTime = openingTime;
         this.closingTime = closingTime;
+        this.region = region;
     }
 
     public Long getPlaceId() { return placeId; }
@@ -116,6 +122,14 @@ public class Place {
 
     public List<Booking> getBookings() { return bookings; }
     public void setBookings(List<Booking> bookings) { this.bookings = bookings; }
+
+    public Region getRegion() {
+    return region;
+    }
+
+    public void setRegion(Region region) {
+    this.region = region;
+    }
 
     @Override
     public String toString() {

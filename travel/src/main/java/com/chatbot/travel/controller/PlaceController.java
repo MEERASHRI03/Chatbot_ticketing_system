@@ -2,14 +2,8 @@ package com.chatbot.travel.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import com.chatbot.travel.model.Place;
 import com.chatbot.travel.service.PlaceService;
@@ -19,42 +13,25 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/places")
 public class PlaceController {
-     private final PlaceService placeService;
+
+    private final PlaceService placeService;
 
     public PlaceController(PlaceService placeService) {
         this.placeService = placeService;
     }
 
-    // Add Place (Admin)
-    @PostMapping
-    public Place addPlace(@Valid @RequestBody Place place) {
-        return placeService.addPlace(place);
-    }
+    // ================= USER ACCESS =================
 
-    // Get All Places
+    // Get All Places (Everyone)
     @GetMapping
     public List<Place> getAllPlaces() {
         return placeService.getAllPlaces();
     }
 
-    // Get Place by ID
+    // Get Place by ID (Everyone)
     @GetMapping("/{id}")
     public Place getPlaceById(@PathVariable Long id) {
         return placeService.getPlaceById(id);
-    }
-
-    // Update Place
-    @PutMapping("/{id}")
-    public Place updatePlace(@PathVariable Long id,
-                             @Valid @RequestBody Place place) {
-        return placeService.updatePlace(id, place);
-    }
-
-    // Delete Place
-    @DeleteMapping("/{id}")
-    public String deletePlace(@PathVariable Long id) {
-        placeService.deletePlace(id);
-        return "Place deleted successfully";
     }
 
     // Search by City
@@ -75,5 +52,28 @@ public class PlaceController {
         return placeService.searchByName(name);
     }
 
+    // ================= ADMIN ACCESS =================
 
+    // Add Place → REGIONAL_ADMIN + SUPER_ADMIN
+    @PostMapping
+    @PreAuthorize("hasAnyRole('REGIONAL_ADMIN','SUPER_ADMIN')")
+    public Place addPlace(@Valid @RequestBody Place place) {
+        return placeService.addPlace(place);
+    }
+
+    // Update Place → REGIONAL_ADMIN + SUPER_ADMIN
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('REGIONAL_ADMIN','SUPER_ADMIN')")
+    public Place updatePlace(@PathVariable Long id,
+                             @Valid @RequestBody Place place) {
+        return placeService.updatePlace(id, place);
+    }
+
+    // Delete Place → REGIONAL_ADMIN + SUPER_ADMIN
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('REGIONAL_ADMIN','SUPER_ADMIN')")
+    public String deletePlace(@PathVariable Long id) {
+        placeService.deletePlace(id);
+        return "Place deleted successfully";
+    }
 }

@@ -4,20 +4,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.chatbot.travel.model.Booking;
-import com.chatbot.travel.model.Payment;
-import com.chatbot.travel.model.Ticket;
-import com.chatbot.travel.model.User;
+import com.chatbot.travel.model.*;
 import com.chatbot.travel.model.enums.BookingStatus;
 import com.chatbot.travel.model.enums.PaymentStatus;
 import com.chatbot.travel.model.enums.TicketStatus;
-import com.chatbot.travel.repository.BookingRepository;
-import com.chatbot.travel.repository.PaymentRepository;
-import com.chatbot.travel.repository.TicketRepository;
-import com.chatbot.travel.repository.UserRepository;
-
-import jakarta.transaction.Transactional;
+import com.chatbot.travel.repository.*;
 
 @Service
 public class PaymentService {
@@ -40,15 +33,12 @@ public class PaymentService {
     @Transactional
     public Payment createPayment(Payment payment) {
 
-        // Fetch user
         User user = userRepository.findById(payment.getUser().getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Fetch booking
         Booking booking = bookingRepository.findById(payment.getBooking().getBookingId())
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        // Prevent double payment
         if (booking.getBookingStatus() == BookingStatus.CONFIRMED) {
             throw new RuntimeException("Booking already paid");
         }
@@ -59,14 +49,10 @@ public class PaymentService {
 
         Payment savedPayment = paymentRepository.save(payment);
 
-        // AUTOMATED WORKFLOW
         if (savedPayment.getPaymentStatus() == PaymentStatus.SUCCESS) {
 
-            // 1️⃣ Confirm Booking
             booking.setBookingStatus(BookingStatus.CONFIRMED);
-            bookingRepository.save(booking);
 
-            // 2️⃣ Auto Create Ticket
             Ticket ticket = new Ticket();
             ticket.setBooking(booking);
             ticket.setPlaceName(booking.getPlace().getName());
@@ -89,10 +75,12 @@ public class PaymentService {
 
     public Payment getPaymentById(Long id) {
         return paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
+                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + id));
     }
 
+    @Transactional
     public Payment updatePayment(Long id, Payment payment) {
+
         Payment existing = getPaymentById(id);
 
         existing.setAmount(payment.getAmount());
@@ -100,11 +88,13 @@ public class PaymentService {
         existing.setPaymentStatus(payment.getPaymentStatus());
         existing.setTransactionId(payment.getTransactionId());
 
-        return paymentRepository.save(existing);
+        return existing;
     }
 
+    @Transactional
     public void deletePayment(Long id) {
-        paymentRepository.deleteById(id);
+        Payment payment = getPaymentById(id);
+        paymentRepository.delete(payment);
     }
 
     public List<Payment> getPaymentsByUser(Long userId) {

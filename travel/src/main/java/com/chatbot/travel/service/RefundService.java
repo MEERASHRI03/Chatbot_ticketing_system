@@ -1,28 +1,36 @@
 package com.chatbot.travel.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.chatbot.travel.model.Refund;
 import com.chatbot.travel.model.Ticket;
 import com.chatbot.travel.model.enums.RefundStatus;
 import com.chatbot.travel.repository.RefundRepository;
 import com.chatbot.travel.repository.TicketRepository;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class RefundService {
 
-    private final RefundRepository refundRepository;
-    private final TicketRepository ticketRepository;
+    private RefundRepository refundRepository;
+    private TicketRepository ticketRepository;
 
-    public RefundService(RefundRepository refundRepository, TicketRepository ticketRepository) {
+    // ✅ Manual Constructor Injection (No Lombok)
+    public RefundService(RefundRepository refundRepository,
+                         TicketRepository ticketRepository) {
         this.refundRepository = refundRepository;
         this.ticketRepository = ticketRepository;
     }
 
-    //  Create refund
+    // ===============================
+    // Create Refund Request
+    // ===============================
+    @Transactional
     public Refund requestRefundByTicketId(Long ticketId, String reason) {
+
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
@@ -32,48 +40,62 @@ public class RefundService {
 
         Refund refund = new Refund();
         refund.setTicket(ticket);
-        refund.setRefundAmount(ticket.getAmount()); // Refund full amount
+        refund.setRefundAmount(ticket.getAmount());
         refund.setReason(reason);
         refund.setRefundStatus(RefundStatus.PENDING);
 
         return refundRepository.save(refund);
     }
 
-    //  Approve refund
+    // ===============================
+    // Approve Refund
+    // ===============================
+    @Transactional
     public Refund approveRefund(Long refundId) {
-        Refund refund = refundRepository.findById(refundId)
-                .orElseThrow(() -> new RuntimeException("Refund not found"));
+
+        Refund refund = getRefundById(refundId);
 
         refund.setRefundStatus(RefundStatus.APPROVED);
         refund.setProcessedAt(LocalDateTime.now());
-        return refundRepository.save(refund);
+
+        return refund;
     }
 
-    //  Reject refund
+    // ===============================
+    // Reject Refund
+    // ===============================
+    @Transactional
     public Refund rejectRefund(Long refundId) {
-        Refund refund = refundRepository.findById(refundId)
-                .orElseThrow(() -> new RuntimeException("Refund not found"));
+
+        Refund refund = getRefundById(refundId);
 
         refund.setRefundStatus(RefundStatus.REJECTED);
         refund.setProcessedAt(LocalDateTime.now());
-        return refundRepository.save(refund);
+
+        return refund;
     }
 
-    //  Get all refunds
+    // ===============================
+    // Get All Refunds
+    // ===============================
     public List<Refund> getAllRefunds() {
         return refundRepository.findAll();
     }
 
-    // Get refund by ID
+    // ===============================
+    // Get Refund By ID
+    // ===============================
     public Refund getRefundById(Long refundId) {
         return refundRepository.findById(refundId)
-                .orElseThrow(() -> new RuntimeException("Refund not found"));
+                .orElseThrow(() -> new RuntimeException("Refund not found with id: " + refundId));
     }
 
-    //  Delete refund
+    // ===============================
+    // Delete Refund
+    // ===============================
+    @Transactional
     public void deleteRefund(Long refundId) {
-        Refund refund = refundRepository.findById(refundId)
-                .orElseThrow(() -> new RuntimeException("Refund not found"));
+        Refund refund = getRefundById(refundId);
         refundRepository.delete(refund);
     }
 }

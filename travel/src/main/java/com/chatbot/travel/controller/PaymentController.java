@@ -2,15 +2,8 @@ package com.chatbot.travel.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import com.chatbot.travel.model.Payment;
 import com.chatbot.travel.service.PaymentService;
@@ -26,36 +19,50 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
+    // ================= USER ACCESS =================
+
+    // User creates payment
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public Payment createPayment(@RequestBody Payment payment) {
         return paymentService.createPayment(payment);
     }
 
-    @GetMapping
-    public List<Payment> getAllPayments() {
-        return paymentService.getAllPayments();
+    // User views their payments
+    @GetMapping("/user/{userId}")
+    @PreAuthorize("hasRole('USER')")
+    public List<Payment> getPaymentsByUser(@PathVariable Long userId) {
+        return paymentService.getPaymentsByUser(userId);
     }
 
+    // View payment by ID (can be allowed for both)
     @GetMapping("/{id}")
     public Payment getPaymentById(@PathVariable Long id) {
         return paymentService.getPaymentById(id);
     }
 
+    // ================= ADMIN ACCESS =================
+
+    // Admin can see all payments
+    @GetMapping
+    @PreAuthorize("hasAnyRole('REGIONAL_ADMIN','SUPER_ADMIN')")
+    public List<Payment> getAllPayments() {
+        return paymentService.getAllPayments();
+    }
+
+    // Admin update payment status
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('REGIONAL_ADMIN','SUPER_ADMIN')")
     public Payment updatePayment(@PathVariable Long id,
                                  @RequestBody Payment payment) {
         return paymentService.updatePayment(id, payment);
     }
 
+    // Only SUPER_ADMIN delete
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public String deletePayment(@PathVariable Long id) {
         paymentService.deletePayment(id);
         return "Payment deleted successfully";
     }
-
-    @GetMapping("/user/{userId}")
-    public List<Payment> getPaymentsByUser(@PathVariable Long userId) {
-        return paymentService.getPaymentsByUser(userId);
-    }
-
 }
