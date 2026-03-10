@@ -1,0 +1,20 @@
+.landing{
+    text-align:center;
+    padding:100px 20px;
+}
+
+.landing h1{
+    font-size:45px;
+}
+
+.landing-buttons{
+    margin-top:30px;
+}
+
+.landing-buttons a{
+    text-decoration:none;
+    margin:10px;
+    padding:12px 20px;
+    border:1px solid black;
+    border-radius:6px;
+}
