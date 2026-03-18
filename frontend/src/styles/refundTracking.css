@@ -1,0 +1,255 @@
+/* ─── Root ──────────────────────────────────────────────── */
+.rf-root {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  font-family: 'DM Sans', sans-serif;
+  color: #1e293b;
+}
+
+/* ─── Loading ───────────────────────────────────────────── */
+.rf-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 14px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+}
+.rf-spinner {
+  width: 32px; height: 32px;
+  border: 2.5px solid #e2e8f0;
+  border-top-color: #0d9488;
+  border-radius: 50%;
+  animation: rfSpin 0.75s linear infinite;
+}
+@keyframes rfSpin { to { transform: rotate(360deg); } }
+
+/* ─── Error ─────────────────────────────────────────────── */
+.rf-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 12px;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  color: #64748b;
+  font-size: 14px;
+}
+.rf-error-icon { font-size: 40px; }
+.rf-error button {
+  margin-top: 8px;
+  background: #0d9488;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 22px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.rf-error button:hover { background: #0f766e; }
+
+/* ─── Header ────────────────────────────────────────────── */
+.rf-header {
+  margin-bottom: 28px;
+  animation: rfFadeUp 0.4s ease both;
+}
+
+.rf-back {
+  background: none;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 16px;
+  display: block;
+  transition: color 0.2s;
+}
+.rf-back:hover { color: #0d9488; }
+
+.rf-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.4px;
+  margin-bottom: 4px;
+}
+.rf-sub {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* ─── Card ──────────────────────────────────────────────── */
+.rf-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  animation: rfFadeUp 0.4s 0.1s ease both;
+}
+
+/* ─── Status Row ────────────────────────────────────────── */
+.rf-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.rf-status-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.rf-status-badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 100px;
+  letter-spacing: 0.3px;
+}
+.badge-pending   { background: #fef3c7; color: #d97706; border: 1px solid #fcd34d; }
+.badge-processed { background: #dcfce7; color: #16a34a; border: 1px solid #86efac; }
+.badge-rejected  { background: #ffe4e6; color: #e11d48; border: 1px solid #fda4af; }
+
+/* ─── Progress ──────────────────────────────────────────── */
+.rf-progress {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 0;
+}
+
+.rf-step-wrap {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.rf-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.rf-step-dot {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid #e2e8f0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  transition: all 0.3s;
+}
+
+.rf-step-done .rf-step-dot {
+  background: #0d9488;
+  border-color: #0d9488;
+  color: white;
+}
+
+.rf-step-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-align: center;
+  white-space: nowrap;
+}
+.rf-step-done .rf-step-label { color: #0d9488; }
+
+.rf-step-line {
+  flex: 1;
+  height: 2px;
+  background: #e2e8f0;
+  margin: 0 4px;
+  margin-bottom: 20px;
+  transition: background 0.3s;
+}
+.rf-line-done { background: #0d9488; }
+
+/* ─── Rejected note ─────────────────────────────────────── */
+.rf-rejected-note {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #be123c;
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* ─── Divider ───────────────────────────────────────────── */
+.rf-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin-bottom: 20px;
+}
+
+/* ─── Details ───────────────────────────────────────────── */
+.rf-details {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rf-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.rf-detail-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.rf-detail-val {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.rf-amount {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0d9488;
+}
+
+/* ─── Success note ──────────────────────────────────────── */
+.rf-success-note {
+  margin-top: 20px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #15803d;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ─── Animation ─────────────────────────────────────────── */
+@keyframes rfFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

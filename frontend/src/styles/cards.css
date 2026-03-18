@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ─── Place Card ────────────────────────────────────────── */
+.pc-card {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: pcFadeUp 0.5s ease both;
+  display: flex;
+  flex-direction: column;
+}
+.pc-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(13,148,136,0.16);
+}
+
+/* Banner */
+.pc-banner {
+  height: 180px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pc-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.3), transparent 60%);
+}
+
+.pc-emoji {
+  font-size: 58px;
+  z-index: 1;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
+  animation: pcFloat 4s ease-in-out infinite;
+}
+
+@keyframes pcFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+.pc-location-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  z-index: 2;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 100px;
+  letter-spacing: 0.2px;
+}
+
+/* Body */
+.pc-body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.pc-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 14px;
+  letter-spacing: -0.3px;
+}
+
+/* Prices */
+.pc-prices {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.pc-price-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.pc-price-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pc-price-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0d9488;
+}
+
+.pc-price-divider {
+  width: 1px;
+  height: 36px;
+  background: #e2e8f0;
+}
+
+/* Actions */
+.pc-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.pc-btn-outline {
+  flex: 1;
+  text-decoration: none;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0d9488;
+  border: 1.5px solid #0d9488;
+  border-radius: 100px;
+  padding: 9px 12px;
+  transition: all 0.2s;
+}
+.pc-btn-outline:hover {
+  background: #ccfbf1;
+}
+
+.pc-btn-fill {
+  flex: 1;
+  text-decoration: none;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  background: #0d9488;
+  border: 1.5px solid #0d9488;
+  border-radius: 100px;
+  padding: 9px 12px;
+  transition: all 0.2s;
+  box-shadow: 0 3px 10px rgba(13,148,136,0.28);
+}
+.pc-btn-fill:hover {
+  background: #0f766e;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(13,148,136,0.38);
+}
+
+@keyframes pcFadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

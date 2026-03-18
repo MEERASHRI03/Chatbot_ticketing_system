@@ -24,4 +24,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     boolean existsByBooking(Booking booking);
 
     Ticket findByBooking(Booking booking);
+
+    Optional<Ticket> findByBookingBookingId(Long bookingId);
 }

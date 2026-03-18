@@ -7,7 +7,9 @@ import com.chatbot.travel.model.enums.TicketStatus;
 import com.chatbot.travel.repository.BookingRepository;
 import com.chatbot.travel.repository.TicketRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -15,36 +17,35 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final BookingRepository bookingRepository;
+    private final RefundService refundService;
 
     public TicketService(TicketRepository ticketRepository,
-                         BookingRepository bookingRepository) {
+                         BookingRepository bookingRepository,
+                         RefundService refundService) {
+
         this.ticketRepository = ticketRepository;
         this.bookingRepository = bookingRepository;
+        this.refundService = refundService;
     }
 
-    // SAFE MANUAL TICKET CREATION
     public Ticket createTicket(Ticket ticket) {
 
-        // Fetch booking
         Booking booking = bookingRepository.findById(
                 ticket.getBooking().getBookingId()
         ).orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        // Allow only CONFIRMED booking
         if (booking.getBookingStatus() != BookingStatus.CONFIRMED) {
             throw new RuntimeException(
                     "Ticket cannot be generated. Booking not confirmed."
             );
         }
 
-        // Prevent duplicate ticket
         if (ticketRepository.existsByBooking(booking)) {
             throw new RuntimeException(
                     "Ticket already generated for this booking."
             );
         }
 
-        // Auto-fill business fields
         ticket.setBooking(booking);
         ticket.setPlaceName(booking.getPlace().getName());
         ticket.setVisitDate(booking.getVisitDate());
@@ -67,6 +68,7 @@ public class TicketService {
     }
 
     public Ticket updateTicket(Long id, Ticket ticket) {
+
         Ticket existing = getTicketById(id);
 
         existing.setVisitDate(ticket.getVisitDate());
@@ -76,38 +78,55 @@ public class TicketService {
         return ticketRepository.save(existing);
     }
 
-    public Ticket cancelTicket(Long id) {
+    // CANCEL TICKET + AUTO REFUND
+    @Transactional
+    public Ticket cancelTicket(Long id, String reason) {
+
         Ticket ticket = getTicketById(id);
 
-        // Only ACTIVE tickets can be cancelled
         if (ticket.getTicketStatus() != TicketStatus.ACTIVE) {
             throw new RuntimeException(
-                "Only ACTIVE tickets can be cancelled. Current status: " + ticket.getTicketStatus()
+                    "Only ACTIVE tickets can be cancelled. Current status: "
+                            + ticket.getTicketStatus()
             );
         }
 
+        // cancel ticket
         ticket.setTicketStatus(TicketStatus.CANCELLED);
+
+        // cancel booking
+        Booking booking = ticket.getBooking();
+        if (booking != null) {
+            booking.setBookingStatus(BookingStatus.CANCELLED);
+            bookingRepository.save(booking);
+        }
+
+        // AUTO CREATE REFUND
+        refundService.createRefundForCancelledTicket(ticket, reason);
+
         return ticketRepository.save(ticket);
     }
 
     public Ticket markAsUsed(Long id) {
+
         Ticket ticket = getTicketById(id);
 
-        // Only ACTIVE tickets can be marked as USED
         if (ticket.getTicketStatus() != TicketStatus.ACTIVE) {
             throw new RuntimeException(
-                "Only ACTIVE tickets can be marked as USED. Current status: " + ticket.getTicketStatus()
+                    "Only ACTIVE tickets can be marked as USED."
             );
         }
 
-        // Check if the visit date has arrived
-        if (ticket.getVisitDate() == null || ticket.getVisitDate().isAfter(java.time.LocalDate.now())) {
+        if (ticket.getVisitDate() == null ||
+                ticket.getVisitDate().isAfter(LocalDate.now())) {
+
             throw new RuntimeException(
-                "Ticket cannot be used before the visit date: " + ticket.getVisitDate()
+                    "Ticket cannot be used before visit date."
             );
         }
 
         ticket.setTicketStatus(TicketStatus.USED);
+
         return ticketRepository.save(ticket);
     }
 
@@ -115,7 +134,13 @@ public class TicketService {
         ticketRepository.deleteById(id);
     }
 
-    public List<Ticket> getByVisitDate(java.time.LocalDate date) {
+    public List<Ticket> getByVisitDate(LocalDate date) {
         return ticketRepository.findByVisitDate(date);
+    }
+
+    public Ticket getTicketByBookingId(Long bookingId) {
+        return ticketRepository.findByBookingBookingId(bookingId)
+                .orElseThrow(() ->
+                        new RuntimeException("Ticket not found for booking"));
     }
 }

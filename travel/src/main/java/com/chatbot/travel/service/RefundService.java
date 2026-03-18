@@ -15,30 +15,21 @@ import com.chatbot.travel.repository.TicketRepository;
 @Service
 public class RefundService {
 
-    private RefundRepository refundRepository;
-    private TicketRepository ticketRepository;
+    private final RefundRepository refundRepository;
 
-    // ✅ Manual Constructor Injection (No Lombok)
-    public RefundService(RefundRepository refundRepository,
-                         TicketRepository ticketRepository) {
+    public RefundService(RefundRepository refundRepository) {
         this.refundRepository = refundRepository;
-        this.ticketRepository = ticketRepository;
     }
 
-    // ===============================
-    // Create Refund Request
-    // ===============================
     @Transactional
-    public Refund requestRefundByTicketId(Long ticketId, String reason) {
-
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+    public Refund createRefundForCancelledTicket(Ticket ticket, String reason) {
 
         if (refundRepository.findByTicket(ticket).isPresent()) {
-            throw new RuntimeException("Refund already requested for this ticket");
+            return refundRepository.findByTicket(ticket).get();
         }
 
         Refund refund = new Refund();
+
         refund.setTicket(ticket);
         refund.setRefundAmount(ticket.getAmount());
         refund.setReason(reason);
@@ -47,9 +38,6 @@ public class RefundService {
         return refundRepository.save(refund);
     }
 
-    // ===============================
-    // Approve Refund
-    // ===============================
     @Transactional
     public Refund approveRefund(Long refundId) {
 
@@ -58,12 +46,9 @@ public class RefundService {
         refund.setRefundStatus(RefundStatus.APPROVED);
         refund.setProcessedAt(LocalDateTime.now());
 
-        return refund;
+        return refundRepository.save(refund);
     }
 
-    // ===============================
-    // Reject Refund
-    // ===============================
     @Transactional
     public Refund rejectRefund(Long refundId) {
 
@@ -72,30 +57,22 @@ public class RefundService {
         refund.setRefundStatus(RefundStatus.REJECTED);
         refund.setProcessedAt(LocalDateTime.now());
 
-        return refund;
+        return refundRepository.save(refund);
     }
 
-    // ===============================
-    // Get All Refunds
-    // ===============================
     public List<Refund> getAllRefunds() {
         return refundRepository.findAll();
     }
 
-    // ===============================
-    // Get Refund By ID
-    // ===============================
     public Refund getRefundById(Long refundId) {
         return refundRepository.findById(refundId)
-                .orElseThrow(() -> new RuntimeException("Refund not found with id: " + refundId));
+                .orElseThrow(() -> new RuntimeException("Refund not found"));
     }
 
-    // ===============================
-    // Delete Refund
-    // ===============================
-    @Transactional
-    public void deleteRefund(Long refundId) {
-        Refund refund = getRefundById(refundId);
-        refundRepository.delete(refund);
+    public Refund getRefundByTicketId(Long ticketId) {
+
+        return refundRepository.findByTicketTicketId(ticketId)
+                .orElseThrow(() ->
+                        new RuntimeException("Refund not found for ticket"));
     }
 }

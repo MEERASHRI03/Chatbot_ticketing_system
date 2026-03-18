@@ -17,49 +17,35 @@ public class RefundController {
         this.refundService = refundService;
     }
 
-    // ================= USER ACCESS =================
-
-    // User can request refund
-    @PostMapping("/request/{ticketId}")
-    @PreAuthorize("hasRole('USER')")
-    public Refund requestRefund(@PathVariable Long ticketId,
-                                @RequestParam String reason) {
-        return refundService.requestRefundByTicketId(ticketId, reason);
-    }
-
-    // User can view own refund (optional - if needed later)
+    // USER CAN VIEW REFUND
     @GetMapping("/{refundId}")
     public Refund getRefundById(@PathVariable Long refundId) {
         return refundService.getRefundById(refundId);
     }
 
-    // ================= ADMIN ACCESS =================
-
-    // Admins can approve
+    // ADMIN APPROVE
     @PutMapping("/approve/{refundId}")
     @PreAuthorize("hasAnyRole('REGIONAL_ADMIN','SUPER_ADMIN')")
     public Refund approveRefund(@PathVariable Long refundId) {
         return refundService.approveRefund(refundId);
     }
 
-    // Admins can reject
+    // ADMIN REJECT
     @PutMapping("/reject/{refundId}")
     @PreAuthorize("hasAnyRole('REGIONAL_ADMIN','SUPER_ADMIN')")
     public Refund rejectRefund(@PathVariable Long refundId) {
         return refundService.rejectRefund(refundId);
     }
 
-    // Admins can view all refunds
+    // ADMIN VIEW ALL
     @GetMapping
     @PreAuthorize("hasAnyRole('REGIONAL_ADMIN','SUPER_ADMIN')")
     public List<Refund> getAllRefunds() {
         return refundService.getAllRefunds();
     }
 
-    // Only SUPER_ADMIN can delete
-    @DeleteMapping("/{refundId}")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public void deleteRefund(@PathVariable Long refundId) {
-        refundService.deleteRefund(refundId);
+    @GetMapping("/ticket/{ticketId}")
+    public Refund getRefundByTicket(@PathVariable Long ticketId) {
+        return refundService.getRefundByTicketId(ticketId);
     }
 }

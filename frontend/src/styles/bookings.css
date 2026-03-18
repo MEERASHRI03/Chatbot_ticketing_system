@@ -1,0 +1,248 @@
+/* ─── Root ──────────────────────────────────────────────── */
+.mb-root {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  font-family: 'DM Sans', sans-serif;
+  color: #1e293b;
+}
+
+/* ─── Loading ───────────────────────────────────────────── */
+.mb-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 14px;
+  color: #94a3b8;
+  font-size: 14px;
+}
+.mb-spinner {
+  width: 32px; height: 32px;
+  border: 2.5px solid #e2e8f0;
+  border-top-color: #0d9488;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Header ────────────────────────────────────────────── */
+.mb-header {
+  margin-bottom: 32px;
+}
+.mb-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+  letter-spacing: -0.4px;
+}
+.mb-sub {
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+/* ─── Tabs ──────────────────────────────────────────────── */
+.mb-tabs {
+  display: flex;
+  gap: 4px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 28px;
+  width: fit-content;
+}
+
+.mb-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.mb-tab:hover { color: #334155; }
+
+/* Active tab styles */
+.mb-tab-active-pending   { background: white !important; color: #b45309 !important; font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.mb-tab-active-confirmed { background: white !important; color: #15803d !important; font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.mb-tab-active-cancelled { background: white !important; color: #be123c !important; font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+/* Count badge */
+.mb-tab-num {
+  font-size: 11px;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #64748b;
+  padding: 1px 7px;
+  border-radius: 100px;
+  min-width: 20px;
+  text-align: center;
+}
+.num-pending   { background: #fef3c7; color: #b45309; }
+.num-confirmed { background: #dcfce7; color: #15803d; }
+.num-cancelled { background: #ffe4e6; color: #be123c; }
+
+/* ─── List ──────────────────────────────────────────────── */
+.mb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ─── Empty ─────────────────────────────────────────────── */
+.mb-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #94a3b8;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.mb-empty button {
+  background: #0d9488;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 22px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.mb-empty button:hover { background: #0f766e; }
+
+/* ─── Card ──────────────────────────────────────────────── */
+.mb-card {
+  display: flex;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+.mb-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  transform: translateY(-2px);
+}
+
+/* Left accent bar */
+.mb-accent-bar {
+  width: 4px;
+  flex-shrink: 0;
+}
+.accent-pending   { background: #f59e0b; }
+.accent-confirmed { background: #22c55e; }
+.accent-cancelled { background: #f43f5e; }
+
+/* ─── Card Content ──────────────────────────────────────── */
+.mb-card-content {
+  flex: 1;
+  padding: 18px 20px;
+}
+
+/* Top row — place name + amount */
+.mb-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.mb-place {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.mb-date {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.mb-amount {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0d9488;
+  white-space: nowrap;
+}
+
+/* Divider */
+.mb-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin-bottom: 14px;
+}
+
+/* Bottom row — guests + action */
+.mb-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mb-guests {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* ─── Buttons ───────────────────────────────────────────── */
+.mb-btn {
+  padding: 7px 18px;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.18s;
+}
+
+.mb-btn-pay {
+  background: #0d9488;
+  color: white;
+  box-shadow: 0 2px 8px rgba(13,148,136,0.25);
+}
+.mb-btn-pay:hover { background: #0f766e; transform: translateY(-1px); }
+
+.mb-btn-ticket {
+  background: white;
+  color: #0d9488;
+  border: 1.5px solid #0d9488;
+}
+.mb-btn-ticket:hover { background: #f0fdf9; }
+
+.mb-refund-text {
+  font-size: 12px;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* ─── Animation ─────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Responsive ────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .mb-tabs { width: 100%; }
+  .mb-tab  { flex: 1; justify-content: center; padding: 8px 12px; }
+  .mb-card-top { flex-direction: column; gap: 4px; }
+  .mb-amount { font-size: 16px; }
+}

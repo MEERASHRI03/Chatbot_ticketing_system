@@ -1,5 +1,6 @@
 package com.chatbot.travel.controller;
 
+import com.chatbot.travel.dto.CancelTicketRequest;
 import com.chatbot.travel.model.Ticket;
 import com.chatbot.travel.service.TicketService;
 import jakarta.validation.Valid;
@@ -40,9 +41,12 @@ public class TicketController {
         return ticketService.updateTicket(id, ticket);
     }
 
+    // UPDATED CANCEL WITH REASON
     @PutMapping("/cancel/{id}")
-    public Ticket cancelTicket(@PathVariable Long id) {
-        return ticketService.cancelTicket(id);
+    public Ticket cancelTicket(@PathVariable Long id,
+                               @RequestBody CancelTicketRequest request) {
+
+        return ticketService.cancelTicket(id, request.getReason());
     }
 
     @PutMapping("/used/{id}")
@@ -57,10 +61,15 @@ public class TicketController {
 
     @GetMapping("/date/{date}")
     public List<Ticket> getByDate(
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            @PathVariable
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate date) {
+
         return ticketService.getByVisitDate(date);
     }
+
+    @GetMapping("/booking/{bookingId}")
+    public Ticket getTicketByBooking(@PathVariable Long bookingId) {
+        return ticketService.getTicketByBookingId(bookingId);
+    }
 }
-
-

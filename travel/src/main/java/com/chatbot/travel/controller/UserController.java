@@ -21,29 +21,27 @@ public class UserController {
         this.userService = userService;
     }
 
-    // ✅ Public registration
+    // Public registration
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@Valid @RequestBody User user) {
-        User savedUser = userService.registerUser(user);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
     }
 
-    // ✅ Only SUPER_ADMIN can view all users
+    // ✅ ONLY SUPER ADMIN
     @GetMapping
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // ✅ USER can view their own profile
-    // ✅ SUPER_ADMIN can view any profile
+    // ✅ USER + ADMIN
     @GetMapping("/{userId}")
     @PreAuthorize("hasAnyRole('USER','SUPER_ADMIN','REGIONAL_ADMIN')")
     public ResponseEntity<User> getUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
-    // ✅ Only SUPER_ADMIN can update roles
+    // ✅ ONLY SUPER ADMIN
     @PutMapping("/{userId}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<User> updateUser(@PathVariable Long userId,
@@ -51,7 +49,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(userId, user));
     }
 
-    // ✅ Only SUPER_ADMIN can delete users
+    // ✅ ONLY SUPER ADMIN
     @DeleteMapping("/{userId}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {

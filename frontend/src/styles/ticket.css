@@ -1,0 +1,254 @@
+/* ─── Root ──────────────────────────────────────────────── */
+.tk-root {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  font-family: 'DM Sans', sans-serif;
+  color: #1e293b;
+}
+
+/* ─── Header ────────────────────────────────────────────── */
+.tk-header {
+  margin-bottom: 32px;
+  animation: tkFadeUp 0.4s ease both;
+}
+.tk-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.4px;
+  margin-bottom: 4px;
+}
+.tk-sub {
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+/* ─── Empty ─────────────────────────────────────────────── */
+.tk-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  gap: 10px;
+  color: #94a3b8;
+  font-family: 'DM Sans', sans-serif;
+}
+.tk-empty-icon { font-size: 52px; margin-bottom: 6px; }
+.tk-empty h3 { font-size: 20px; font-weight: 700; color: #0f172a; }
+.tk-empty p  { font-size: 14px; }
+
+/* ─── List ──────────────────────────────────────────────── */
+.tk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ─── Card ──────────────────────────────────────────────── */
+.tk-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s, transform 0.2s;
+  animation: tkFadeUp 0.4s ease both;
+}
+.tk-card:hover {
+  box-shadow: 0 6px 24px rgba(13,148,136,0.10);
+  transform: translateY(-2px);
+}
+.tk-card-cancelled {
+  opacity: 0.7;
+}
+
+/* ─── Card Top ──────────────────────────────────────────── */
+.tk-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 22px 16px;
+}
+
+.tk-place-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.tk-ticket-num {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* Status badge */
+.tk-status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.badge-active    { background: #dcfce7; color: #16a34a; border: 1px solid #86efac; }
+.badge-cancelled { background: #ffe4e6; color: #e11d48; border: 1px solid #fda4af; }
+.badge-used      { background: #fef3c7; color: #d97706; border: 1px solid #fcd34d; }
+
+/* ─── Dashed Divider (boarding pass style) ──────────────── */
+.tk-dash-divider {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin: 0;
+}
+
+.tk-notch {
+  width: 18px;
+  height: 18px;
+  background: #f8fafc;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.tk-notch-left  { margin-left: -9px; border-left-color: transparent; }
+.tk-notch-right { margin-right: -9px; border-right-color: transparent; }
+
+.tk-dashes {
+  flex: 1;
+  border-top: 2px dashed #e2e8f0;
+  margin: 0 2px;
+}
+
+/* ─── Card Body ─────────────────────────────────────────── */
+.tk-card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  gap: 20px;
+}
+
+/* ─── Details ───────────────────────────────────────────── */
+.tk-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.tk-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tk-detail-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tk-detail-val {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.tk-amount {
+  color: #0d9488;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ─── QR ────────────────────────────────────────────────── */
+.tk-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.tk-qr-faded {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+
+.tk-qr-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Footer ────────────────────────────────────────────── */
+.tk-card-footer {
+  padding: 14px 22px 18px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tk-cancel-btn {
+  padding: 8px 20px;
+  border: 1.5px solid #f43f5e;
+  background: white;
+  color: #f43f5e;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.tk-cancel-btn:hover {
+  background: #fff1f2;
+}
+
+.tk-refund-btn {
+  padding: 8px 20px;
+  border: none;
+  background: #0d9488;
+  color: white;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  box-shadow: 0 2px 8px rgba(13,148,136,0.25);
+}
+.tk-refund-btn:hover {
+  background: #0f766e;
+  transform: translateY(-1px);
+}
+
+/* ─── Animation ─────────────────────────────────────────── */
+@keyframes tkFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Responsive ────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .tk-card-body { flex-direction: column; align-items: flex-start; }
+  .tk-qr { width: 100%; }
+  .tk-card-footer { justify-content: stretch; }
+  .tk-cancel-btn, .tk-refund-btn { width: 100%; text-align: center; }
+}

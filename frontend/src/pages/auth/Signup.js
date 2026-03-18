@@ -3,114 +3,153 @@ import { signupUser } from "../../services/authServiceTemp";
 import { useNavigate, Link } from "react-router-dom";
 import "../../styles/forms.css";
 
-function Signup(){
+function Signup() {
 
- const[name,setName]=useState("")
- const[email,setEmail]=useState("")
- const[password,setPassword]=useState("")
- const[phone,setPhone]=useState("")
- const[role,setRole]=useState("USER")
- const[region,setRegion]=useState("")
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [role, setRole] = useState("USER");
+  const [region, setRegion] = useState("");
 
- const navigate=useNavigate()
+  const navigate = useNavigate();
 
- const handleSubmit=async(e)=>{
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const userData = { name, email, password, phone, role };
+    if (role === "REGIONAL_ADMIN") userData.region = region;
+    try {
+      await signupUser(userData);
+      alert("Signup successful");
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+      alert("Signup failed");
+    }
+  };
 
-  e.preventDefault()
+  return (
+    <div className="auth-page">
 
-  const userData={
-   name,
-   email,
-   password,
-   phone,
-   role
-  }
+      {/* Left Panel */}
+      <div className="auth-left">
+        <div className="auth-left-content">
+          <div className="auth-brand">✦ TravelBuddy</div>
+          <h2 className="auth-left-title">Your adventure<br />starts<br /><span>right here.</span></h2>
+          <p className="auth-left-sub">Join thousands of travelers exploring India's most breathtaking destinations.</p>
 
-  if(role==="REGIONAL_ADMIN"){
-   userData.region=region
-  }
+          <div className="auth-stats-mini">
+            <div className="mini-stat"><span>500+</span><small>Places</small></div>
+            <div className="mini-stat"><span>12K+</span><small>Travelers</small></div>
+            <div className="mini-stat"><span>4.9★</span><small>Rating</small></div>
+          </div>
+        </div>
+      </div>
 
-  try{
+      {/* Right Panel */}
+      <div className="auth-right">
+        <div className="auth-form-box signup-box">
 
-   await signupUser(userData)
+          <Link to="/" className="auth-back">← Back to Home</Link>
 
-   alert("Signup successful")
-   navigate("/login")
+          <div className="auth-form-header">
+            <h1>Create account</h1>
+            <p>Start exploring in minutes</p>
+          </div>
 
-  }
-  catch(err){
+          <form onSubmit={handleSubmit} className="auth-form">
 
-   console.log(err)
-   alert("Signup failed")
+            <div className="input-row">
+              <div className="input-group">
+                <label>Full Name</label>
+                <div className="input-wrap">
+                  <span className="input-icon">👤</span>
+                  <input
+                    placeholder="Your name"
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+              </div>
 
-  }
+              <div className="input-group">
+                <label>Phone</label>
+                <div className="input-wrap">
+                  <span className="input-icon">📱</span>
+                  <input
+                    placeholder="+91 XXXXX XXXXX"
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
 
- }
+            <div className="input-group">
+              <label>Email Address</label>
+              <div className="input-wrap">
+                <span className="input-icon">✉</span>
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+            </div>
 
- return(
+            <div className="input-group">
+              <label>Password</label>
+              <div className="input-wrap">
+                <span className="input-icon">🔒</span>
+                <input
+                  type="password"
+                  placeholder="Create a strong password"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </div>
 
-  <div className="form-container">
+            <div className="input-group">
+              <label>Account Role</label>
+              <div className="input-wrap select-wrap">
+                <span className="input-icon">🏷️</span>
+                <select onChange={(e) => setRole(e.target.value)} value={role}>
+                  <option value="USER">User</option>
+                  <option value="SUPER_ADMIN">Super Admin</option>
+                  <option value="REGIONAL_ADMIN">Regional Admin</option>
+                </select>
+              </div>
+            </div>
 
-   <h2>Signup</h2>
+            {role === "REGIONAL_ADMIN" && (
+              <div className="input-group region-animate">
+                <label>Select Region</label>
+                <div className="input-wrap select-wrap">
+                  <span className="input-icon">📍</span>
+                  <select onChange={(e) => setRegion(e.target.value)}>
+                    <option value="">Select Region</option>
+                    <option value="SOUTH">South</option>
+                    <option value="NORTH">North</option>
+                    <option value="EAST">East</option>
+                    <option value="WEST">West</option>
+                  </select>
+                </div>
+              </div>
+            )}
 
-   <form onSubmit={handleSubmit} className="form">
+            <button type="submit" className="auth-btn">
+              Create Account <span className="btn-arrow">→</span>
+            </button>
 
-    <input
-     placeholder="Name"
-     onChange={(e)=>setName(e.target.value)}
-    />
+          </form>
 
-    <input
-     type="email"
-     placeholder="Email"
-     onChange={(e)=>setEmail(e.target.value)}
-    />
+          <p className="auth-switch">
+            Already have an account? <Link to="/login">Sign in</Link>
+          </p>
 
-    <input
-     type="password"
-     placeholder="Password"
-     onChange={(e)=>setPassword(e.target.value)}
-    />
+        </div>
+      </div>
 
-    <input
-     placeholder="Phone"
-     onChange={(e)=>setPhone(e.target.value)}
-    />
-
-    <select onChange={(e)=>setRole(e.target.value)}>
-
-     <option value="USER">User</option>
-     <option value="SUPER_ADMIN">Super Admin</option>
-     <option value="REGIONAL_ADMIN">Regional Admin</option>
-
-    </select>
-
-    {role==="REGIONAL_ADMIN" && (
-
-     <select onChange={(e)=>setRegion(e.target.value)}>
-
-      <option value="">Select Region</option>
-      <option value="SOUTH">South</option>
-      <option value="NORTH">North</option>
-      <option value="EAST">East</option>
-      <option value="WEST">West</option>
-
-     </select>
-
-    )}
-
-    <button>Signup</button>
-
-   </form>
-
-   <p>Already have account? <Link to="/login">Login</Link></p>
-
-   <Link to="/">Back</Link>
-
-  </div>
-
- )
-
+    </div>
+  );
 }
 
-export default Signup
+export default Signup;
