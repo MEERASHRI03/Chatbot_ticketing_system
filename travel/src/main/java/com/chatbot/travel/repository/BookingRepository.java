@@ -1,7 +1,9 @@
 package com.chatbot.travel.repository;
 
 import com.chatbot.travel.model.Booking;
+import com.chatbot.travel.model.User;
 import com.chatbot.travel.model.enums.BookingStatus;
+import com.chatbot.travel.model.enums.Region;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,6 +17,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUser_UserId(Long userId);
 
     List<Booking> findByPlace_PlaceId(Long placeId);
+
+    @Query("""
+        SELECT DISTINCT b.user
+        FROM Booking b
+        WHERE b.place.region = :region
+    """)
+    List<User> findDistinctUsersByPlaceRegion(Region region);
 
     // Count total confirmed visitors for a place on a specific date
     @Query("""

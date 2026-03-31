@@ -23,6 +23,14 @@ public class RefundController {
         return refundService.getRefundById(refundId);
     }
 
+    // USER REQUEST REFUND
+@PostMapping("/request/{ticketId}")
+@PreAuthorize("hasRole('USER')")
+public Refund requestRefund(@PathVariable Long ticketId,
+                            @RequestParam String reason) {
+    return refundService.requestRefundByTicketId(ticketId, reason);
+}
+
     // ADMIN APPROVE
     @PutMapping("/approve/{refundId}")
     @PreAuthorize("hasAnyRole('REGIONAL_ADMIN','SUPER_ADMIN')")

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getUserBookings } from "../../services/bookingService";
 import { createPayment } from "../../services/paymentService";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 import "../../styles/bookings.css";
 
 function MyBookings() {
@@ -9,31 +10,43 @@ function MyBookings() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("PENDING");
   const navigate = useNavigate();
+  const { userId } = useContext(AuthContext);
+
+  const resolvedUserId = userId || localStorage.getItem("userId");
 
   const fetchBookings = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user && user.userId) {
-      getUserBookings(user.userId)
-        .then((res) => {
-          const updated = res.data
-            .map((b) => ({ ...b, status: b.bookingStatus || "PENDING" }))
-            .sort((a, b) => b.bookingId - a.bookingId);
-          setBookings(updated);
-          setLoading(false);
-        })
-        .catch((err) => { console.error(err); setLoading(false); });
+    if (!resolvedUserId) {
+      setBookings([]);
+      setLoading(false);
+      return;
     }
+
+    getUserBookings(resolvedUserId)
+      .then((res) => {
+        const updated = res.data
+          .map((b) => ({ ...b, status: b.bookingStatus || "PENDING" }))
+          .sort((a, b) => b.bookingId - a.bookingId);
+        setBookings(updated);
+        setLoading(false);
+      })
+      .catch((err) => { console.error(err); setLoading(false); });
   };
 
-  useEffect(() => { fetchBookings(); }, []);
+  useEffect(() => {
+    fetchBookings();
+  }, [resolvedUserId]);
 
   const handlePayment = async (booking) => {
     if (booking.status === "CONFIRMED") { alert("Payment already completed."); return; }
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
+      if (!resolvedUserId) {
+        alert("User session not found. Please log in again.");
+        return;
+      }
+
       const paymentData = {
         booking: { bookingId: booking.bookingId },
-        user: { userId: user.userId },
+        user: { userId: resolvedUserId },
         amount: booking.totalAmount,
         paymentMethod: "DUMMY",
         transactionId: "TXN" + Date.now(),

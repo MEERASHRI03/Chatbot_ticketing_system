@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { createBooking } from "../../services/bookingService";
+import { AuthContext } from "../../context/AuthContext";
 import "../../styles/booking.css";
 
 function BookingPage() {
   const { placeId } = useParams();
   const navigate = useNavigate();
+  const { userId, token } = useContext(AuthContext);
+  const resolvedUserId = userId || localStorage.getItem("userId");
 
   const [visitDate, setVisitDate] = useState("");
   const [timeSlot, setTimeSlot] = useState("10AM-12PM");
@@ -20,16 +23,14 @@ function BookingPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const storedUser = localStorage.getItem("user");
-    if (!storedUser) {
+    if (!token || !resolvedUserId) {
       alert("Please login first");
       navigate("/login");
       return;
     }
 
-    const user = JSON.parse(storedUser);
     const bookingData = {
-      userId: user.userId,
+      userId: Number(resolvedUserId),
       placeId: Number(placeId),
       visitDate,
       timeSlot,

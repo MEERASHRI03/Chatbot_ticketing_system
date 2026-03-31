@@ -2,22 +2,38 @@ package com.chatbot.travel.service;
 
 import com.chatbot.travel.model.User;
 import com.chatbot.travel.model.enums.Role;
+import com.chatbot.travel.repository.BookingRepository;
 import com.chatbot.travel.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
+                       BookingRepository bookingRepository,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.bookingRepository = bookingRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        return userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     // ================= REGISTER =================
@@ -48,6 +64,22 @@ public class UserService {
 
     // ================= GET ALL =================
     public List<User> getAllUsers() {
+        User currentUser = getCurrentUser();
+
+        if (currentUser.getRole() == Role.REGIONAL_ADMIN) {
+            Map<Long, User> regionUsers = new LinkedHashMap<>();
+
+            bookingRepository.findDistinctUsersByPlaceRegion(currentUser.getRegion())
+                    .forEach(user -> regionUsers.put(user.getUserId(), user));
+
+            userRepository.findByRoleAndRegion(Role.REGIONAL_ADMIN, currentUser.getRegion())
+                    .forEach(user -> regionUsers.put(user.getUserId(), user));
+
+            regionUsers.put(currentUser.getUserId(), currentUser);
+
+            return List.copyOf(regionUsers.values());
+        }
+
         return userRepository.findAll();
     }
 
@@ -57,9 +89,28 @@ public class UserService {
         if (userId == null)
             throw new IllegalArgumentException("User ID cannot be null");
 
-        return userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
+
+        User currentUser = getCurrentUser();
+        if (currentUser.getRole() == Role.REGIONAL_ADMIN) {
+            boolean regionalAdminInSameRegion =
+                    user.getRole() == Role.REGIONAL_ADMIN &&
+                    currentUser.getRegion() != null &&
+                    currentUser.getRegion().equals(user.getRegion());
+
+            boolean userBookedInRegion = bookingRepository
+                    .findDistinctUsersByPlaceRegion(currentUser.getRegion())
+                    .stream()
+                    .anyMatch(regionUser -> regionUser.getUserId().equals(user.getUserId()));
+
+            if (!regionalAdminInSameRegion && !userBookedInRegion && !currentUser.getUserId().equals(user.getUserId())) {
+                throw new RuntimeException("You cannot access user outside your region");
+            }
+        }
+
+        return user;
     }
 
     // ================= GET BY EMAIL =================

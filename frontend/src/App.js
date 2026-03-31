@@ -10,9 +10,11 @@ import BookingPage from "./pages/booking/BookingPage";
 import MyBookings from "./pages/user/MyBookings";
 import TicketPage from "./pages/user/TicketPage";
 import RefundTracking from "./pages/user/RefundTracking";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 import Navbar from "./components/common/Navbar";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AdminProtectedRoute from "./routes/AdminProtectedRoute";
 
 import "./styles/global.css";
 
@@ -20,8 +22,8 @@ import "./styles/global.css";
 function AppLayout() {
   const location = useLocation();
 
-  // Hide Navbar on these public pages
-  const hideNavbarRoutes = ["/", "/login", "/signup"];
+  // Hide Navbar on these public pages and admin pages (admin has its own navbar)
+  const hideNavbarRoutes = ["/", "/login", "/signup", "/admin/dashboard"];
   const showNavbar = !hideNavbarRoutes.includes(location.pathname);
 
   return (
@@ -35,7 +37,7 @@ function AppLayout() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        {/* Protected Routes */}
+        {/* Protected Routes - User */}
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/places" element={<ProtectedRoute><Places /></ProtectedRoute>} />
         <Route path="/place/:id" element={<ProtectedRoute><PlaceDetails /></ProtectedRoute>} />
@@ -44,6 +46,9 @@ function AppLayout() {
         <Route path="/ticket" element={<TicketPage />} />
         <Route path="/ticket/:bookingId" element={<TicketPage />} />
         <Route path="/refund/:ticketId" element={<RefundTracking />} />
+
+        {/* Protected Routes - Admin */}
+        <Route path="/admin/dashboard" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
 
       </Routes>
     </>

@@ -16,6 +16,11 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (role === "REGIONAL_ADMIN" && !region) {
+      alert("Please select a region for the regional admin account.");
+      return;
+    }
+
     const userData = { name, email, password, phone, role };
     if (role === "REGIONAL_ADMIN") userData.region = region;
     try {
@@ -124,7 +129,7 @@ function Signup() {
                 <label>Select Region</label>
                 <div className="input-wrap select-wrap">
                   <span className="input-icon">📍</span>
-                  <select onChange={(e) => setRegion(e.target.value)}>
+                  <select onChange={(e) => setRegion(e.target.value)} value={region} required>
                     <option value="">Select Region</option>
                     <option value="SOUTH">South</option>
                     <option value="NORTH">North</option>

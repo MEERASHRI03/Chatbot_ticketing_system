@@ -43,10 +43,10 @@ function RefundTracking() {
 
   const status = refund?.refundStatus;
 
-  const steps = ["PENDING", "PROCESSED"];
+  const steps = ["PENDING", "APPROVED"];
   const currentStep =
-    status === "REJECTED"  ? -1 :
-    status === "PROCESSED" ? 1  : 0;
+  status === "REJECTED"  ? -1 :
+  status === "APPROVED"  ? 1  : 0;
 
   return (
     <div className="rf-root">
@@ -55,7 +55,8 @@ function RefundTracking() {
       <div className="rf-header">
         <button className="rf-back" onClick={() => navigate("/ticket")}>← Back to Tickets</button>
         <h1 className="rf-title">Refund Tracking</h1>
-        <p className="rf-sub">Ticket #{refund?.ticket?.ticketId || ticketId}</p>
+       <p className="rf-sub">
+  📍 {refund?.ticket?.placeName || refund?.ticket?.booking?.place?.name || "Place"}</p>
       </div>
 
       <div className="rf-card">
@@ -65,8 +66,8 @@ function RefundTracking() {
           <span className="rf-status-label">Current Status</span>
           <span className={`rf-status-badge badge-${status?.toLowerCase()}`}>
             {status === "PENDING"   && "⏳ Pending"}
-            {status === "PROCESSED" && "✓ Processed"}
-            {status === "REJECTED"  && "✕ Rejected"}
+            {status === "APPROVED"  && "✓  Approved"}
+            {status === "REJECTED"  && "✕  Rejected"}
           </span>
         </div>
 
@@ -77,7 +78,7 @@ function RefundTracking() {
               <div key={step} className="rf-step-wrap">
                 <div className={`rf-step ${i <= currentStep ? "rf-step-done" : ""}`}>
                   <div className="rf-step-dot">{i <= currentStep ? "✓" : i + 1}</div>
-                  <div className="rf-step-label">{step === "PENDING" ? "Refund Requested" : "Refund Processed"}</div>
+                  <div className="rf-step-label">{step === "PENDING" ? "Refund Requested" : "Refund Approved"}</div>
                 </div>
                 {i < steps.length - 1 && (
                   <div className={`rf-step-line ${currentStep >= 1 ? "rf-line-done" : ""}`} />
@@ -90,7 +91,7 @@ function RefundTracking() {
         {/* Rejected note */}
         {status === "REJECTED" && (
           <div className="rf-rejected-note">
-            ❌ Your refund request was rejected. Please contact support for more details.
+          Your refund request was rejected. Please contact support for more details.
           </div>
         )}
 
@@ -106,17 +107,19 @@ function RefundTracking() {
             <span className="rf-detail-label">Cancellation Reason</span>
             <span className="rf-detail-val">{refund?.reason || "N/A"}</span>
           </div>
-          <div className="rf-detail-row">
-            <span className="rf-detail-label">Ticket ID</span>
-            <span className="rf-detail-val">#{refund?.ticket?.ticketId || ticketId}</span>
-          </div>
+         <div className="rf-detail-row">
+  <span className="rf-detail-label">Place</span>
+  <span className="rf-detail-val">
+    {refund?.ticket?.placeName || refund?.ticket?.booking?.place?.name || "N/A"}
+  </span>
+</div>
         </div>
 
-        {status === "PROCESSED" && (
-          <div className="rf-success-note">
-            🎉 Your refund has been processed. Amount will reflect in 3–5 business days.
-          </div>
-        )}
+        {status === "APPROVED" && (
+  <div className="rf-success-note">
+    🎉 Your refund has been approved. Amount will be credited in 3–5 business days.
+  </div>
+)}
 
       </div>
     </div>
