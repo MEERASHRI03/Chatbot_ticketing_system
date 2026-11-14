@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tickets")
+@CrossOrigin(origins = "*")
 public class TicketController {
 
     private final TicketService ticketService;
@@ -71,5 +72,28 @@ public class TicketController {
     @GetMapping("/booking/{bookingId}")
     public Ticket getTicketByBooking(@PathVariable Long bookingId) {
         return ticketService.getTicketByBookingId(bookingId);
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<Ticket> getTicketsByUser(@PathVariable Long userId) {
+        return ticketService.getTicketsByUserId(userId);
+    }
+
+    @GetMapping("/{bookingRef}/download")
+    public org.springframework.http.ResponseEntity<byte[]> downloadTicketPdf(@PathVariable String bookingRef) {
+        byte[] pdfBytes = ticketService.getTicketPdfByBookingRef(bookingRef);
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(org.springframework.http.ContentDisposition.inline()
+                .filename("ticket-" + bookingRef + ".pdf")
+                .build());
+        return org.springframework.http.ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
+    }
+
+    @GetMapping("/download/{bookingRef}")
+    public org.springframework.http.ResponseEntity<byte[]> downloadTicketPdfAlt(@PathVariable String bookingRef) {
+        return downloadTicketPdf(bookingRef);
     }
 }

@@ -7,6 +7,7 @@ import {
 } from "../../services/PlaceService";
 
 import PlaceCard from "../../components/places/PlaceCard";
+import AddPlaceModal from "./AddPlaceModal";
 import "../../styles/places.css";
 
 const gradients = [
@@ -26,13 +27,20 @@ function Places() {
   const [places, setPlaces] = useState([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  // Check admin role
+  const userRole = localStorage.getItem("userRole");
+  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const role = userRole || storedUser.role || "";
+  const isAdmin = role === "SUPER_ADMIN" || role === "REGIONAL_ADMIN";
 
   useEffect(() => { loadAllPlaces(); }, []);
 
   const loadAllPlaces = () => {
     setLoading(true);
     getAllPlaces()
-      .then(res => setPlaces(res.data))
+      .then(res => setPlaces(res.data || []))
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
   };
@@ -44,7 +52,7 @@ function Places() {
       let res = await searchByName(query);
       if (res.data.length === 0) res = await searchByCity(query);
       if (res.data.length === 0) res = await searchByState(query);
-      setPlaces(res.data);
+      setPlaces(res.data || []);
     } catch (error) {
       console.error(error);
     } finally {
@@ -65,9 +73,33 @@ function Places() {
 
       {/* Header */}
       <div className="pl-header">
-        <span className="pl-tag">500+ Destinations</span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+          <span className="pl-tag">{places.length} Monuments & Heritage Sites</span>
+          {isAdmin && (
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              style={{
+                background: "linear-gradient(135deg, #0d9488, #0f766e)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "100px",
+                padding: "8px 18px",
+                fontSize: "13px",
+                fontWeight: "700",
+                cursor: "pointer",
+                boxShadow: "0 4px 14px rgba(13,148,136,0.3)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              🏛️ + Add New Place (Admin)
+            </button>
+          )}
+        </div>
+
         <h1 className="pl-title">Explore Places</h1>
-        <p className="pl-sub">Discover India's most breathtaking destinations — from serene hills to golden coasts.</p>
+        <p className="pl-sub">Discover India's most breathtaking destinations and heritage monuments.</p>
 
         {/* Search */}
         <div className="pl-search-bar">
@@ -90,7 +122,7 @@ function Places() {
       {/* Results count */}
       {!loading && (
         <div className="pl-results-bar">
-          <span>{places.length} place{places.length !== 1 ? "s" : ""} found</span>
+          <span>{places.length} place{places.length !== 1 ? "s" : ""} available</span>
         </div>
       )}
 
@@ -120,6 +152,13 @@ function Places() {
           <button className="pl-reset-btn" onClick={clearSearch}>Show All Places</button>
         </div>
       )}
+
+      {/* Admin Add Place Modal */}
+      <AddPlaceModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onPlaceAdded={loadAllPlaces}
+      />
 
     </div>
   );

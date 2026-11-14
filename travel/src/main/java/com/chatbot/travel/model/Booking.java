@@ -21,8 +21,14 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @Column(unique = true, length = 64)
+    private String bookingRef;
+
+    @Column(length = 128)
+    private String sessionId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "user_id", nullable = true)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
@@ -72,9 +78,60 @@ public class Booking {
         if (this.bookingStatus == null) {
             this.bookingStatus = BookingStatus.PENDING;
         }
+        if (this.bookingRef == null || this.bookingRef.trim().isEmpty()) {
+            this.bookingRef = "BKG-" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
+        }
     }
 
     public Booking() {}
+
+    public Long getId() {
+        return bookingId;
+    }
+
+    public void setId(Long id) {
+        this.bookingId = id;
+    }
+
+    public String getBookingRef() {
+        return bookingRef;
+    }
+
+    public void setBookingRef(String bookingRef) {
+        this.bookingRef = bookingRef;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public int getAdults() {
+        return adultCount;
+    }
+
+    public void setAdults(int adults) {
+        this.adultCount = adults;
+    }
+
+    public int getChildren() {
+        return childCount;
+    }
+
+    public void setChildren(int children) {
+        this.childCount = children;
+    }
+
+    public BookingStatus getStatus() {
+        return bookingStatus;
+    }
+
+    public void setStatus(BookingStatus status) {
+        this.bookingStatus = status;
+    }
 
 
     public Long getBookingId() {

@@ -49,6 +49,14 @@ public class Place {
     @Column(nullable = false)
     private Integer availableSlots;
 
+    private Integer dailyCapacity;
+
+    @Column(length = 500)
+    private String aliases;
+
+    @Column(nullable = false)
+    private Boolean active = true;
+
     @NotNull(message = "Opening time required")
     @Column(nullable = false)
     private LocalTime openingTime;
@@ -86,6 +94,9 @@ public class Place {
         this.closingTime = closingTime;
         this.region = region;
     }
+
+    public Long getId() { return placeId; }
+    public void setId(Long id) { this.placeId = id; }
 
     public Long getPlaceId() { return placeId; }
     public void setPlaceId(Long placeId) { this.placeId = placeId; }
@@ -130,6 +141,23 @@ public class Place {
     public void setRegion(Region region) {
     this.region = region;
     }
+
+    public Integer getDailyCapacity() { 
+        return dailyCapacity != null ? dailyCapacity : availableSlots; 
+    }
+    public void setDailyCapacity(Integer dailyCapacity) { 
+        this.dailyCapacity = dailyCapacity; 
+        if (this.availableSlots == null) {
+            this.availableSlots = dailyCapacity;
+        }
+    }
+
+    public String getAliases() { return aliases; }
+    public void setAliases(String aliases) { this.aliases = aliases; }
+
+    public Boolean getActive() { return active != null ? active : true; }
+    public Boolean isActive() { return getActive(); }
+    public void setActive(Boolean active) { this.active = active; }
 
     @Override
     public String toString() {

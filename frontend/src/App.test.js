@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import ChatBookingWidget from './components/chatbot/ChatBookingWidget';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('renders ChatBookingWidget assistant title', () => {
+  render(<ChatBookingWidget />);
+  const titleElement = screen.getByText(/Monument Ticketing Bot/i);
+  expect(titleElement).toBeInTheDocument();
 });

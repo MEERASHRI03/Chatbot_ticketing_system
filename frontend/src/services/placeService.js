@@ -19,3 +19,17 @@ export const searchByState = (state) => {
 export const searchByName = (name) => {
   return axiosInstance.get(`/places/name/${name}`);
 };
+
+// ================= ADMIN FUNCTIONS =================
+
+export const addPlace = (placeData) => {
+  return axiosInstance.post("/places", placeData);
+};
+
+export const updatePlace = (id, placeData) => {
+  return axiosInstance.put(`/places/${id}`, placeData);
+};
+
+export const deletePlace = (id) => {
+  return axiosInstance.delete(`/places/${id}`);
+};

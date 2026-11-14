@@ -13,6 +13,11 @@ target/
 .springBeans
 .sts4-cache
 
+### Ignore environment variables and local configuration files ###
+.env
+.env.*
+application-local.properties
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -31,3 +36,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore local config
+travel/src/main/resources/application-local.properties

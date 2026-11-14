@@ -39,6 +39,14 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
+                    .requestMatchers("/api/chat/**").permitAll()
+                    .requestMatchers("/api/payments/create-order").permitAll()
+                    .requestMatchers("/api/payments/verify").permitAll()
+                    .requestMatchers("/api/payments/webhook").permitAll()
+                    .requestMatchers("/api/tickets/*/download").permitAll()
+                    .requestMatchers("/api/tickets/download/*").permitAll()
+                    .requestMatchers("/api/tickets/booking/*").permitAll()
+                    .requestMatchers("/places/**").permitAll()
                     .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

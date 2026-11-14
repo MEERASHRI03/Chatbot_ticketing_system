@@ -1,7 +1,6 @@
 package com.chatbot.travel.repository;
 
 import com.chatbot.travel.model.Booking;
-import com.chatbot.travel.model.enums.BookingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,13 +15,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByPlace_PlaceId(Long placeId);
 
-    // Count total confirmed visitors for a place on a specific date
-    @Query("""
-        SELECT COALESCE(SUM(b.adultCount + b.childCount), 0)
-        FROM Booking b
-        WHERE b.place.placeId = :placeId
-        AND b.visitDate = :visitDate
-        AND b.bookingStatus = 'CONFIRMED'
-    """)
+    java.util.Optional<Booking> findByBookingRef(String bookingRef);
+
+    java.util.Optional<Booking> findTopBySessionIdOrderByCreatedAtDesc(String sessionId);
+
+    List<Booking> findBySessionId(String sessionId);
+
+    // Count total confirmed/paid visitors for a place on a specific date using native SQL
+    @Query(value = """
+        SELECT COALESCE(SUM(b.adult_count + b.child_count), 0)
+        FROM bookings b
+        WHERE b.place_id = :placeId
+        AND b.visit_date = :visitDate
+        AND b.booking_status IN ('CONFIRMED', 'PAID')
+    """, nativeQuery = true)
     int countConfirmedVisitors(Long placeId, LocalDate visitDate);
 }

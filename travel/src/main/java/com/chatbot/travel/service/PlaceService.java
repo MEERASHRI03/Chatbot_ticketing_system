@@ -28,13 +28,18 @@ public class PlaceService {
     // ================= HELPER METHOD =================
 
     private User getCurrentUser() {
-
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
+        if (authentication == null ||
+                !authentication.isAuthenticated() ||
+                "anonymousUser".equals(authentication.getName())) {
+            return null;
+        }
+
         return userRepository
                 .findByEmail(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElse(null);
     }
 
     // ================= ADD PLACE =================
@@ -42,6 +47,9 @@ public class PlaceService {
     public Place addPlace(Place place) {
 
         User currentUser = getCurrentUser();
+        if (currentUser == null) {
+            throw new RuntimeException("Unauthorized: Authentication required to add places");
+        }
 
         // Region must be provided
         if (place.getRegion() == null) {
@@ -49,13 +57,19 @@ public class PlaceService {
         }
 
         if (currentUser.getRole() == Role.REGIONAL_ADMIN) {
-
             // Regional admin can only add to their region
             if (!place.getRegion().equals(currentUser.getRegion())) {
                 throw new RuntimeException(
-                        "You can only add places to your own region");
+                        "You can only add places to your own region (" + currentUser.getRegion() + ")");
             }
         }
+
+        if (place.getDailyCapacity() == null && place.getAvailableSlots() != null) {
+            place.setDailyCapacity(place.getAvailableSlots());
+        } else if (place.getAvailableSlots() == null && place.getDailyCapacity() != null) {
+            place.setAvailableSlots(place.getDailyCapacity());
+        }
+        place.setAdmin(currentUser);
 
         return placeRepository.save(place);
     }
@@ -66,7 +80,7 @@ public class PlaceService {
 
         User currentUser = getCurrentUser();
 
-        if (currentUser.getRole() == Role.REGIONAL_ADMIN) {
+        if (currentUser != null && currentUser.getRole() == Role.REGIONAL_ADMIN) {
             return placeRepository
                     .findByRegion(currentUser.getRegion());
         }
@@ -84,7 +98,7 @@ public class PlaceService {
 
         User currentUser = getCurrentUser();
 
-        if (currentUser.getRole() == Role.REGIONAL_ADMIN) {
+        if (currentUser != null && currentUser.getRole() == Role.REGIONAL_ADMIN) {
             if (!place.getRegion().equals(currentUser.getRegion())) {
                 throw new RuntimeException(
                         "You cannot access place outside your region");
@@ -101,6 +115,9 @@ public class PlaceService {
 
         Place place = getPlaceById(id);
         User currentUser = getCurrentUser();
+        if (currentUser == null) {
+            throw new RuntimeException("Unauthorized: Authentication required to update places");
+        }
 
         if (currentUser.getRole() == Role.REGIONAL_ADMIN) {
 
@@ -124,6 +141,12 @@ public class PlaceService {
         place.setAdultPrice(updatedPlace.getAdultPrice());
         place.setChildPrice(updatedPlace.getChildPrice());
         place.setAvailableSlots(updatedPlace.getAvailableSlots());
+        if (updatedPlace.getDailyCapacity() != null) {
+            place.setDailyCapacity(updatedPlace.getDailyCapacity());
+        }
+        if (updatedPlace.getAliases() != null) {
+            place.setAliases(updatedPlace.getAliases());
+        }
         place.setOpeningTime(updatedPlace.getOpeningTime());
         place.setClosingTime(updatedPlace.getClosingTime());
         place.setRegion(updatedPlace.getRegion());
@@ -138,6 +161,9 @@ public class PlaceService {
 
         Place place = getPlaceById(id);
         User currentUser = getCurrentUser();
+        if (currentUser == null) {
+            throw new RuntimeException("Unauthorized: Authentication required to delete places");
+        }
 
         if (currentUser.getRole() == Role.REGIONAL_ADMIN) {
 
@@ -156,7 +182,7 @@ public class PlaceService {
 
         User currentUser = getCurrentUser();
 
-        if (currentUser.getRole() == Role.REGIONAL_ADMIN) {
+        if (currentUser != null && currentUser.getRole() == Role.REGIONAL_ADMIN) {
             return placeRepository
                     .findByCityAndRegion(city, currentUser.getRegion());
         }
@@ -168,7 +194,7 @@ public class PlaceService {
 
         User currentUser = getCurrentUser();
 
-        if (currentUser.getRole() == Role.REGIONAL_ADMIN) {
+        if (currentUser != null && currentUser.getRole() == Role.REGIONAL_ADMIN) {
             return placeRepository
                     .findByStateAndRegion(state, currentUser.getRegion());
         }
@@ -180,7 +206,7 @@ public class PlaceService {
 
         User currentUser = getCurrentUser();
 
-        if (currentUser.getRole() == Role.REGIONAL_ADMIN) {
+        if (currentUser != null && currentUser.getRole() == Role.REGIONAL_ADMIN) {
             return placeRepository
                     .findByNameContainingIgnoreCaseAndRegion(
                             name, currentUser.getRegion());
